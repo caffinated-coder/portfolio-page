@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initMobileMenu();
     initContactForm();
     initAudioEngine();
+    initScrollReveal();
 });
 
 /* ==========================================================================
@@ -210,10 +211,30 @@ function initWebGLPortfolio() {
         // Project mouse vector to estimated z=0 plane in 3D camera frustum
         mouseTarget.set(mouse3D.x * 12, mouse3D.y * 7, 0);
 
+        // --- AUDIO-REACTIVE CALCULATIONS ---
+        let volumeFactor = 1.0;
+        if (window.audioAnalyser && window.audioIsPlaying) {
+            const bufferLength = window.audioAnalyser.frequencyBinCount;
+            const dataArray = new Uint8Array(bufferLength);
+            window.audioAnalyser.getByteFrequencyData(dataArray);
+
+            let sum = 0;
+            // Read first 8 bins (bass range) for maximum beat responsiveness
+            const bandsToAnalyze = Math.min(8, bufferLength);
+            for (let i = 0; i < bandsToAnalyze; i++) {
+                sum += dataArray[i];
+            }
+            const average = sum / bandsToAnalyze;
+            volumeFactor = 1.0 + (average / 255) * 0.35; // Pulse up to 35% larger
+        }
+
+        // Apply audio scale pulses smoothly
+        const currentScale = THREE.MathUtils.lerp(points.scale.x, volumeFactor, 0.1);
+        points.scale.set(currentScale, currentScale, currentScale);
+
         const positions = geometry.attributes.position.array;
 
         // Perform Shape Morphing & Physics calculations on the CPU
-        // Lerp coordinates based on scroll state
         for (let i = 0; i < particleCount; i++) {
             const i3 = i * 3;
 
@@ -230,10 +251,10 @@ function initWebGLPortfolio() {
                 // Add wavy animation details if morphing into wave
                 if (scrollPercent > 0.1) {
                     const wavyFactor = (scrollPercent - 0.1) / 0.35;
-                    // Animate Wave height over time
+                    // Animate Wave height over time (influenced by audio volume)
                     const xVal = positionsWave[i3];
                     const zVal = positionsWave[i3 + 2];
-                    const animatedWaveY = Math.sin(xVal * 0.4 + time * 1.5) * Math.cos(zVal * 0.4 + time * 1.5) * 1.6;
+                    const animatedWaveY = Math.sin(xVal * 0.4 + time * 1.5) * Math.cos(zVal * 0.4 + time * 1.5) * 1.6 * volumeFactor;
                     targetY = THREE.MathUtils.lerp(targetY, animatedWaveY, wavyFactor);
                 }
             } else {
@@ -243,44 +264,59 @@ function initWebGLPortfolio() {
                 targetY = THREE.MathUtils.lerp(positionsWave[i3 + 1], positionsHelix[i3 + 1], t);
                 targetZ = THREE.MathUtils.lerp(positionsWave[i3 + 2], positionsHelix[i3 + 2], t);
 
-                // Add wavy height details to wave target
+                // Add wavy height details to wave target (influenced by audio volume)
                 const xVal = positionsWave[i3];
                 const zVal = positionsWave[i3 + 2];
-                const animatedWaveY = Math.sin(xVal * 0.4 + time * 1.5) * Math.cos(zVal * 0.4 + time * 1.5) * 1.6;
+                const animatedWaveY = Math.sin(xVal * 0.4 + time * 1.5) * Math.cos(zVal * 0.4 + time * 1.5) * 1.6 * volumeFactor;
                 const activeWaveTargetY = THREE.MathUtils.lerp(animatedWaveY, positionsHelix[i3 + 1], t);
                 targetY = THREE.MathUtils.lerp(targetY, activeWaveTargetY, 1.0);
             }
 
             // Smoothly ease current position toward targeted morph coordinate
-            // We use standard lerp multiplier to give elastic snapping behavior
             positions[i3] += (targetX - positions[i3]) * 0.09;
             positions[i3 + 1] += (targetY - positions[i3 + 1]) * 0.09;
             positions[i3 + 2] += (targetZ - positions[i3 + 2]) * 0.09;
 
-            // --- CURSOR GRAVITY PHYSICS ---
-            // Calculate distance to mouse projected space
+            // --- CURSOR GRAVITY PHYSICS (VORTEX SWIRL) ---
             const dx = positions[i3] - mouseTarget.x;
             const dy = positions[i3 + 1] - mouseTarget.y;
             const dz = positions[i3 + 2] - mouseTarget.z;
             const dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
 
             if (dist < hoverRadius) {
-                // Push force: particles drift away from mouse position
                 const force = (hoverRadius - dist) / hoverRadius * hoverForce;
                 
-                // Direction vector
-                positions[i3] += (dx / dist) * force;
-                positions[i3 + 1] += (dy / dist) * force;
-                positions[i3 + 2] += (dz / dist) * force;
+                // Repel component
+                positions[i3] += (dx / dist) * force * 0.3;
+                positions[i3 + 1] += (dy / dist) * force * 0.3;
+                positions[i3 + 2] += (dz / dist) * force * 0.3;
+
+                // Swirl orbit component: perpendicular tangent forces
+                positions[i3] -= (dy / dist) * force * 0.95;
+                positions[i3 + 1] += (dx / dist) * force * 0.95;
             }
         }
 
         // Trigger updates in Three.js
         geometry.attributes.position.needsUpdate = true;
 
-        // Subtle scene rotation details
-        points.rotation.y = time * 0.05;
-        points.rotation.x = time * 0.02;
+        // --- CAMERA ORBIT & PARALLAX ---
+        const orbitAngle = scrollPercent * Math.PI * 0.32; // Rotate camera up to ~58 degrees
+        const baseRadius = 15;
+        const targetCamX = baseRadius * Math.sin(orbitAngle) + (mouse3D.x * 2.5); // Add mouse parallax
+        const targetCamY = mouse3D.y * 2.5;
+        const targetCamZ = baseRadius * Math.cos(orbitAngle);
+
+        // Ease camera coordinates
+        camera.position.x += (targetCamX - camera.position.x) * 0.06;
+        camera.position.y += (targetCamY - camera.position.y) * 0.06;
+        camera.position.z += (targetCamZ - camera.position.z) * 0.06;
+        
+        camera.lookAt(0, 0, 0);
+
+        // Subtle scene rotation details (accelerated by audio beat)
+        points.rotation.y = time * 0.04 * volumeFactor;
+        points.rotation.x = time * 0.015 * volumeFactor;
 
         renderer.render(scene, camera);
     }
@@ -408,6 +444,9 @@ function initAudioEngine() {
         filterNode.connect(analyserNode);
         analyserNode.connect(audioContext.destination);
 
+        // Expose analyser globally for WebGL particle engine
+        window.audioAnalyser = analyserNode;
+
         // Control filter frequency on scroll
         window.addEventListener('scroll', () => {
             if (!filterNode || !audioContext) return;
@@ -533,12 +572,63 @@ function initAudioEngine() {
             statusText.textContent = 'SOUND OFF';
             toggleBtn.classList.remove('playing');
             isPlaying = false;
+            window.audioIsPlaying = false;
         } else {
             // Unmute / Play loop
             audio.play().catch(err => console.log('Audio playback failed:', err));
             statusText.textContent = 'SOUND ON';
             toggleBtn.classList.add('playing');
             isPlaying = true;
+            window.audioIsPlaying = true;
         }
     });
+}
+
+/* ==========================================================================
+   SCROLL REVEAL OBSERVER FOR SECTION FLOW
+   ========================================================================== */
+function initScrollReveal() {
+    const reveals = document.querySelectorAll('.reveal');
+    if (reveals.length === 0) return;
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('revealed');
+                
+                // If it contains stat counter values, trigger the counts
+                const statNums = entry.target.querySelectorAll('.stat-num');
+                statNums.forEach(num => {
+                    if (!num.dataset.counted) {
+                        num.dataset.counted = "true";
+                        const target = parseInt(num.getAttribute('data-target'));
+                        startRevealCounter(num, target);
+                    }
+                });
+            } else {
+                // Remove to allow re-animating when scrolling back up
+                entry.target.classList.remove('revealed');
+            }
+        });
+    }, {
+        threshold: 0.15, // Trigger when 15% visible
+        rootMargin: '0px 0px -50px 0px'
+    });
+
+    reveals.forEach(el => observer.observe(el));
+}
+
+function startRevealCounter(el, target) {
+    const duration = 1500; // ms
+    const stepTime = Math.abs(Math.floor(duration / target));
+    let current = 0;
+
+    const timer = setInterval(() => {
+        current += 1;
+        el.textContent = current + (el.textContent.includes('%') ? '%' : el.textContent.includes('+') ? '+' : '');
+        if (current >= target) {
+            el.textContent = target + (target === 5 ? '+' : target === 99 ? '%' : '+');
+            clearInterval(timer);
+        }
+    }, stepTime);
 }
