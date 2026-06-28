@@ -1,12 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Mail, 
-  ArrowRight, 
-  BookOpen, 
-  Compass, 
-  Music, 
-  Briefcase, 
-  Award 
+  ArrowRight 
 } from 'lucide-react';
 import AudioGate from './components/AudioGate';
 import Scene from './components/Scene';
@@ -124,14 +119,14 @@ export default function App() {
             </h2>
             <div className="gallery-text-grid">
               <div className="gallery-text-col">
-                <Compass size={24} className="col-icon cyan-icon" />
+                <span className="col-bullet">// 01</span>
                 <h3>Travels & Local Insights</h3>
                 <p>
                   Studying geopolitical risk is more than reading report briefs; it's about seeing the terrain. From navigating the mist-shrouded hills of Assam to analyzing public policy at Delhi University and Mumbai, my travels provide a grounded, local context to regional security dynamics.
                 </p>
               </div>
               <div className="gallery-text-col">
-                <Music size={24} className="col-icon purple-icon" />
+                <span className="col-bullet">// 02</span>
                 <h3>Acoustic Waves & Logic</h3>
                 <p>
                   Beyond strategic affairs, I find balance in music. Playing acoustic guitar and experimenting with loop-building is how I process structure and flow—a mindset that translates directly to the logic of programming in Python and building data systems.
@@ -154,7 +149,7 @@ export default function App() {
               {/* Timeline: Education */}
               <div className="info-block">
                 <div className="block-header">
-                  <Award size={20} className="header-icon" />
+                  <span className="block-header-bullet">//</span>
                   <h3>Education</h3>
                 </div>
                 <div className="timeline">
@@ -174,7 +169,7 @@ export default function App() {
               {/* Timeline: Experience */}
               <div className="info-block">
                 <div className="block-header">
-                  <Briefcase size={20} className="header-icon" />
+                  <span className="block-header-bullet">//</span>
                   <h3>Internships</h3>
                 </div>
                 <div className="timeline">
@@ -202,7 +197,7 @@ export default function App() {
               {/* Grid: Skills */}
               <div className="info-block">
                 <div className="block-header">
-                  <Compass size={20} className="header-icon" />
+                  <span className="block-header-bullet">//</span>
                   <h3>Toolkit & Skills</h3>
                 </div>
                 <div className="skills-grid">
@@ -220,7 +215,7 @@ export default function App() {
               {/* Publications */}
               <div className="info-block">
                 <div className="block-header">
-                  <BookOpen size={20} className="header-icon" />
+                  <span className="block-header-bullet">//</span>
                   <h3>Selected Publications</h3>
                 </div>
                 <div className="publications-list">

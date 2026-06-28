@@ -369,16 +369,14 @@ body {
   flex-direction: column;
 }
 
-.col-icon {
+.col-bullet {
+  font-family: var(--font-heading);
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--color-text-secondary);
   margin-bottom: 20px;
-}
-
-.cyan-icon {
-  color: #38bdf8;
-}
-
-.purple-icon {
-  color: #a78bfa;
+  letter-spacing: 0.05em;
+  display: inline-block;
 }
 
 .gallery-text-col h3 {
@@ -430,8 +428,12 @@ body {
   margin-bottom: 28px;
 }
 
-.header-icon {
-  color: #ffffff;
+.block-header-bullet {
+  color: var(--color-text-secondary);
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 1.25rem;
+  line-height: 1;
 }
 
 .block-header h3 {
@@ -856,9 +858,9 @@ body {
 
 .cursor-ring {
   position: absolute;
-  width: 32px;
-  height: 32px;
-  border: 1px solid rgba(255, 255, 255, 0.45);
+  width: 24px;
+  height: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
   border-radius: 50%;
   pointer-events: none;
   z-index: 9;
@@ -870,8 +872,8 @@ body {
 
 /* Cursor hovering states */
 .cursor-hovering .cursor-ring {
-  width: 64px;
-  height: 64px;
+  width: 44px;
+  height: 44px;
   background-color: #ffffff;
   border-color: #ffffff;
 }

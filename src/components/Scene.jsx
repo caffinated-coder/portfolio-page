@@ -3,7 +3,7 @@ import { Canvas, useThree, useFrame } from '@react-three/fiber';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-import HeroFloaters from './HeroFloaters';
+import GPGPUParticles from './GPGPUParticles';
 import GalleryItems from './GalleryItems';
 import FluidShader from './FluidShader';
 
@@ -102,9 +102,9 @@ export default function Scene() {
         {/* Camera Scroll Manager */}
         <CameraScroll />
 
-        {/* Section 1: Hero Floaters (y = 0) */}
+        {/* Section 1: GPGPU Particles (y = 0) */}
         <group position={[0, 0, 0]}>
-          <HeroFloaters />
+          <GPGPUParticles />
         </group>
 
         {/* Section 2: Floating Gallery (y = -15) */}
