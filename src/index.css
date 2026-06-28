@@ -820,3 +820,97 @@ body {
     text-align: center;
   }
 }
+
+/* ==========================================================================
+   LUSION-STYLE CUSTOM CURSOR & TEXT REVEALS
+   ========================================================================== */
+
+/* Hide system cursor on hover-capable desktop devices */
+@media (hover: hover) and (pointer: fine) {
+  body, a, button, input, textarea, .skill-tag, .pub-link, .social-pill-link, .sound-pill {
+    cursor: none !important;
+  }
+}
+
+.custom-cursor-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 99999;
+  pointer-events: none;
+  mix-blend-mode: normal;
+  transition: opacity 0.3s ease;
+}
+
+.cursor-dot {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background-color: #ffffff;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.cursor-ring {
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9;
+  transition: width 0.35s cubic-bezier(0.16, 1, 0.3, 1), 
+              height 0.35s cubic-bezier(0.16, 1, 0.3, 1), 
+              background-color 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Cursor hovering states */
+.cursor-hovering .cursor-ring {
+  width: 64px;
+  height: 64px;
+  background-color: #ffffff;
+  border-color: #ffffff;
+}
+
+.custom-cursor-wrapper.cursor-hovering {
+  mix-blend-mode: difference; /* Inverts text/pixel colors below it */
+}
+
+.cursor-hovering .cursor-dot {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+/* Text Input focus */
+.cursor-text-focus .cursor-ring {
+  width: 2px;
+  height: 24px;
+  border-radius: 0px;
+  background-color: #ffffff;
+  border: none;
+}
+.cursor-text-focus .cursor-dot {
+  opacity: 0;
+}
+
+/* Text Reveal elements */
+.reveal-text-container {
+  display: inline-block;
+}
+
+.reveal-word-wrapper {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+}
+
+.reveal-word {
+  display: inline-block;
+  transform: translateY(100%);
+  will-change: transform;
+}
+

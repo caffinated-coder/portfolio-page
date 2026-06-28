@@ -10,6 +10,9 @@ import {
 } from 'lucide-react';
 import AudioGate from './components/AudioGate';
 import Scene from './components/Scene';
+import CustomCursor from './components/CustomCursor';
+import Magnetic from './components/Magnetic';
+import TextReveal from './components/TextReveal';
 
 // Local inline SVG definition for LinkedIn since installed lucide-react is v1.21
 const Linkedin = (props) => (
@@ -73,18 +76,23 @@ export default function App() {
 
   return (
     <div className="portfolio-app">
+      {/* Lusion-style Custom Cursor */}
+      <CustomCursor />
+
       {/* Background 3D Canvas Scene */}
       <Scene />
 
       {/* Floating Sound Controller Pill */}
       <div className="floating-sound-controller">
-        <button 
-          onClick={handleToggleSound} 
-          className={`sound-pill ${soundOn ? 'sound-active' : 'sound-muted'}`}
-        >
-          <span className="pill-dot"></span>
-          <span>SOUND: {soundOn ? 'ON' : 'OFF'}</span>
-        </button>
+        <Magnetic>
+          <button 
+            onClick={handleToggleSound} 
+            className={`sound-pill ${soundOn ? 'sound-active' : 'sound-muted'}`}
+          >
+            <span className="pill-dot"></span>
+            <span>SOUND: {soundOn ? 'ON' : 'OFF'}</span>
+          </button>
+        </Magnetic>
       </div>
 
       {/* Scrollable DOM Sections */}
@@ -95,7 +103,7 @@ export default function App() {
           <div className="section-content hero-wrapper">
             <div className="meta-tag">GEOPOLITICAL RISK & POLICY ANALYSIS</div>
             <h1 className="hero-title">
-              SANJAY <span className="stroke-text">SARMAH</span>
+              <TextReveal>SANJAY</TextReveal> <TextReveal className="stroke-text">SARMAH</TextReveal>
             </h1>
             <p className="hero-subtitle">
               M.A. in International Relations & Strategic Studies. Bridging qualitative geopolitical risk analysis with quantitative data visualization to evaluate security, foreign policy, and regional conflicts.
@@ -111,7 +119,9 @@ export default function App() {
         <section className="vertical-section section-gallery" id="gallery">
           <div className="section-content gallery-wrapper">
             <span className="section-badge">01 // BEYOND ACADEMICS</span>
-            <h2 className="section-headline">Wanderlust & Sonic Gradients.</h2>
+            <h2 className="section-headline">
+              <TextReveal>Wanderlust & Sonic Gradients.</TextReveal>
+            </h2>
             <div className="gallery-text-grid">
               <div className="gallery-text-col">
                 <Compass size={24} className="col-icon cyan-icon" />
@@ -137,7 +147,9 @@ export default function App() {
             {/* LEFT SIDE: Structured, clean academic/professional columns */}
             <div className="split-left-content">
               <span className="section-badge">02 // DOSSIER</span>
-              <h2 className="section-headline">Qualifications & Research</h2>
+              <h2 className="section-headline">
+                <TextReveal>Qualifications & Research</TextReveal>
+              </h2>
               
               {/* Timeline: Education */}
               <div className="info-block">
@@ -212,14 +224,18 @@ export default function App() {
                   <h3>Selected Publications</h3>
                 </div>
                 <div className="publications-list">
-                  <a href="https://thediplomat.com/2024/08/the-threat-of-insurgency-in-indias-assam-continues/" target="_blank" rel="noopener noreferrer" className="pub-link">
-                    <span>The Threat of Insurgency in India's Assam Continues</span>
-                    <span className="pub-meta">The Diplomat, Aug 2024 <ArrowRight size={14} /></span>
-                  </a>
-                  <a href="https://chintan.indiafoundation.in/articles/balochistan-a-new-republic-in-the-making-or-a-lost-call/" target="_blank" rel="noopener noreferrer" className="pub-link">
-                    <span>Balochistan: A New Republic in the Making or a Lost Call?</span>
-                    <span className="pub-meta">Chintan, July 2025 <ArrowRight size={14} /></span>
-                  </a>
+                  <Magnetic>
+                    <a href="https://thediplomat.com/2024/08/the-threat-of-insurgency-in-indias-assam-continues/" target="_blank" rel="noopener noreferrer" className="pub-link">
+                      <span>The Threat of Insurgency in India's Assam Continues</span>
+                      <span className="pub-meta">The Diplomat, Aug 2024 <ArrowRight size={14} /></span>
+                    </a>
+                  </Magnetic>
+                  <Magnetic>
+                    <a href="https://chintan.indiafoundation.in/articles/balochistan-a-new-republic-in-the-making-or-a-lost-call/" target="_blank" rel="noopener noreferrer" className="pub-link">
+                      <span>Balochistan: A New Republic in the Making or a Lost Call?</span>
+                      <span className="pub-meta">Chintan, July 2025 <ArrowRight size={14} /></span>
+                    </a>
+                  </Magnetic>
                   <div className="pub-static-item">
                     <span>Cybersecurity Challenges & Indian Foreign Policy</span>
                     <span className="pub-meta-static">FPRC Journal (J-57), 2024 (ISSN 2277-2464)</span>
@@ -243,7 +259,9 @@ export default function App() {
         <section className="vertical-section section-contact" id="contact">
           <div className="section-content contact-wrapper">
             <span className="section-badge">03 // INQUIRIES</span>
-            <h2 className="section-headline">Initiate Research.</h2>
+            <h2 className="section-headline">
+              <TextReveal>Initiate Research.</TextReveal>
+            </h2>
             
             <div className="contact-grid">
               <div className="contact-info-col">
@@ -251,14 +269,18 @@ export default function App() {
                   Whether you are looking to collaborate on a geopolitical risk analysis, policy brief drafting, or data visualization project, let's connect.
                 </p>
                 <div className="social-links">
-                  <a href="https://www.linkedin.com/in/sanjay-sarmah-8263921ab/" target="_blank" rel="noopener noreferrer" className="social-pill-link">
-                    <Linkedin size={18} />
-                    <span>LinkedIn</span>
-                  </a>
-                  <a href="mailto:sarmah.sanjay@outlook.com" className="social-pill-link">
-                    <Mail size={18} />
-                    <span>Email</span>
-                  </a>
+                  <Magnetic>
+                    <a href="https://www.linkedin.com/in/sanjay-sarmah-8263921ab/" target="_blank" rel="noopener noreferrer" className="social-pill-link">
+                      <Linkedin size={18} />
+                      <span>LinkedIn</span>
+                    </a>
+                  </Magnetic>
+                  <Magnetic>
+                    <a href="mailto:sarmah.sanjay@outlook.com" className="social-pill-link">
+                      <Mail size={18} />
+                      <span>Email</span>
+                    </a>
+                  </Magnetic>
                 </div>
               </div>
 
@@ -275,10 +297,12 @@ export default function App() {
                       <input type="email" placeholder="Email Address" required />
                     </div>
                     <textarea placeholder="Message / Project Scope / Research Requirements" rows="5" required></textarea>
-                    <button type="submit" className="submit-dossier-btn">
-                      <span>SEND MESSAGE</span>
-                      <ArrowRight size={16} />
-                    </button>
+                    <Magnetic>
+                      <button type="submit" className="submit-dossier-btn">
+                        <span>SEND MESSAGE</span>
+                        <ArrowRight size={16} />
+                      </button>
+                    </Magnetic>
                   </form>
                 )}
               </div>
